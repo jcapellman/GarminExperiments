@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace jcGAI.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/v1/DataIngest")]
+    [Route("api/v1/dataingest")]
     public class DataIngestController : ControllerBase
     {
         private readonly ILogger<DataIngestController> _logger;
