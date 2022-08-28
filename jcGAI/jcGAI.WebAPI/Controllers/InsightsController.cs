@@ -1,4 +1,5 @@
-﻿using jcGAI.WebAPI.Services;
+﻿using jcGAI.WebAPI.Objects.Json;
+using jcGAI.WebAPI.Services;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,12 @@ namespace jcGAI.WebAPI.Controllers
         {
             _logger = logger;
             _mongo = mongo;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<InsightResponseItem>> GetInsightsAsync(DateTime startTime = null, DateTime endTime = null)
+        {
+            return new InsightResponseItem();
         }
     }
 }
