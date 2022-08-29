@@ -1,5 +1,6 @@
 using jcGAI.WebAPI.Services;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace jcGAI.WebAPI.Controllers
@@ -19,6 +20,7 @@ namespace jcGAI.WebAPI.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult Upload(List<IFormFile> files)
         {
             try

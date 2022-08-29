@@ -1,6 +1,7 @@
 ﻿using jcGAI.WebAPI.Objects.Json;
 using jcGAI.WebAPI.Services;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace jcGAI.WebAPI.Controllers
@@ -20,7 +21,8 @@ namespace jcGAI.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<InsightResponseItem>> GetInsightsAsync(DateTime startTime = null, DateTime endTime = null)
+        [Authorize]
+        public async Task<ActionResult<InsightResponseItem>> GetInsightsAsync(DateTime? startTime = null, DateTime? endTime = null)
         {
             return new InsightResponseItem();
         }

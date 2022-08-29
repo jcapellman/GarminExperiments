@@ -2,6 +2,10 @@ using jcGAI.WebAPI.Common;
 using jcGAI.WebAPI.Objects.Config;
 using jcGAI.WebAPI.Services;
 
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
+using Microsoft.OpenApi.Models;
+
 namespace jcGAI.WebAPI
 {
     public class Program
@@ -10,24 +14,56 @@ namespace jcGAI.WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var oAuthConfig = builder.Configuration.GetSection("OAuth").Get<OAuthConfig>();
+
             builder.Services.Configure<MongoDBConfig>(builder.Configuration.GetSection(AppConstants.DB_CONNECTION_MONGO));
             builder.Services.AddSingleton<MongoDBService>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "jcGAI", Description = "Garmin Application Insights"});
+
+                c.OrderActionsBy((apiDesc) => $"{apiDesc.ActionDescriptor.RouteValues["controller"]}_{apiDesc.HttpMethod}");
+
+                c.EnableAnnotations();
+            });
+
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
+            })
+            .AddCookie(options =>
+            {
+                options.LoginPath = "/account/google-login";
+            })
+            .AddGoogle(options =>
+            {
+                options.ClientId = oAuthConfig.ClientId;
+                options.ClientSecret = oAuthConfig.Secret;
+            });
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            app.UseAuthentication();
+            app.UseAuthorization();
+
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI();
+                app.UseSwaggerUI(c =>
+                {
+                    c.OAuthClientId(oAuthConfig.ClientId);
+                    c.OAuthClientSecret(oAuthConfig.Secret);
+                    c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
+                });
             }
 
             app.UseHttpsRedirection();
-
+            
             app.MapControllers();
 
             app.Run();
