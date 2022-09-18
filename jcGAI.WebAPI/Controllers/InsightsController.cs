@@ -1,4 +1,5 @@
-﻿using jcGAI.WebAPI.Objects.Json;
+﻿using jcGAI.WebAPI.Controllers.Base;
+using jcGAI.WebAPI.Objects.Json;
 using jcGAI.WebAPI.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -8,22 +9,18 @@ namespace jcGAI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/v1/insights")]
-    public class InsightsController : ControllerBase
+    public class InsightsController : BaseController
     {
-        private readonly ILogger<InsightsController> _logger;
-
-        private readonly MongoDBService _mongo;
-
-        public InsightsController(ILogger<InsightsController> logger, MongoDBService mongo)
+        public InsightsController(ILogger<InsightsController> logger, MongoDBService mongo) : base(logger, mongo)
         {
-            _logger = logger;
-            _mongo = mongo;
         }
 
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<InsightResponseItem>> GetInsightsAsync(DateTime? startTime = null, DateTime? endTime = null)
         {
+            var insights = await Mongo.GetActivitiesAsync(UserId);
+
             return new InsightResponseItem();
         }
     }

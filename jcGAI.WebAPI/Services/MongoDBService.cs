@@ -5,6 +5,8 @@ using Microsoft.Extensions.Options;
 
 using MongoDB.Driver;
 
+using System.Linq;
+
 namespace jcGAI.WebAPI.Services
 {
     public class MongoDBService
@@ -20,9 +22,9 @@ namespace jcGAI.WebAPI.Services
 
         private IMongoCollection<T> GetCollection<T>(string? collectionName = null)
         {
-            var collection = collectionName == null ? _config.CollectionName : collectionName;
+            var collection = collectionName ?? _config.CollectionName;
 
-            if (!_mongoDBClient.ListCollectionNames().ToEnumerable().Any(c => c == collection))
+            if (_mongoDBClient.ListCollectionNames().ToEnumerable().All(c => c != collection))
             {
                 _mongoDBClient.CreateCollection(collection);
             }
@@ -30,13 +32,17 @@ namespace jcGAI.WebAPI.Services
             return _mongoDBClient.GetCollection<T>(collection);
         }
 
-        public async void InsertActivityAsyncs(byte[] file)
+        public async void InsertActivityAsync(int UserId, byte[] file)
         {
             await _mongoDBClient.GetCollection<Activities>(nameof(Activities)).InsertOneAsync(new Activities
             {
                 GPXFileData = file,
-                TimeStamp = DateTime.Now
+                TimeStamp = DateTime.Now,
+                UserId = UserId
             });
         }
+
+        public async Task<List<Activities>> GetActivitiesAsync(int UserId) => 
+            await _mongoDBClient.GetCollection<Activities>(nameof(Activities)).FindSync(a => a.UserId == UserId).ToListAsync();
     }
 }

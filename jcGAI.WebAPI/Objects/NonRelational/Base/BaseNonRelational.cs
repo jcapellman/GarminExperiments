@@ -9,5 +9,7 @@ namespace jcGAI.WebAPI.Objects.NonRelational.Base
         public ObjectId Id { get; set; }
 
         public DateTime TimeStamp { get; set; }
+
+        public int UserId { get; set; }
     }
 }

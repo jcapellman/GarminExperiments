@@ -1,3 +1,4 @@
+using jcGAI.WebAPI.Controllers.Base;
 using jcGAI.WebAPI.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -7,16 +8,10 @@ namespace jcGAI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/v1/dataingest")]
-    public class DataIngestController : ControllerBase
+    public class DataIngestController : BaseController
     {
-        private readonly ILogger<DataIngestController> _logger;
-
-        private readonly MongoDBService _mongo;
-
-        public DataIngestController(ILogger<DataIngestController> logger, MongoDBService mongo)
+        public DataIngestController(ILogger<DataIngestController> logger, MongoDBService mongo) : base(logger, mongo)
         {
-            _logger = logger;
-            _mongo = mongo;
         }
 
         [HttpPost]
@@ -35,13 +30,13 @@ namespace jcGAI.WebAPI.Controllers
                     var stream = new MemoryStream((int)file.Length);
                     file.CopyTo(stream);
 
-                    _mongo.InsertActivityAsyncs(stream.ToArray());
+                    Mongo.InsertActivityAsync(UserId, stream.ToArray());
                 }
 
                 return Ok();
             } catch (Exception ex)
             {
-                _logger.LogError($"Failure to upload {ex}");
+                Logger.LogError($"Failure to upload {ex}");
 
                 return BadRequest("Failed to upload");
             }
