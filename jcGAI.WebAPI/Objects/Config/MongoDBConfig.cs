@@ -7,5 +7,14 @@
         public string DatabaseName { get; set; }
 
         public string CollectionName { get; set; }
+
+        public MongoDBConfig()
+        {
+            ConnectionString = string.Empty;
+
+            DatabaseName = string.Empty;
+
+            CollectionName = string.Empty;
+        }
     }
 }

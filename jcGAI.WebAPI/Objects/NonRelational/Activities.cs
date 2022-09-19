@@ -5,5 +5,10 @@ namespace jcGAI.WebAPI.Objects.NonRelational
     public class Activities : BaseNonRelational
     {
         public byte[] GPXFileData { get; set; }
+
+        public Activities()
+        {
+            GPXFileData = Array.Empty<byte>();
+        }
     }
 }
