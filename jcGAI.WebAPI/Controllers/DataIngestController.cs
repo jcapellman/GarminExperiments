@@ -32,16 +32,16 @@ namespace jcGAI.WebAPI.Controllers
 
                     var result = await Mongo.InsertActivityAsync(UserId, stream.ToArray());
 
-                    if (result)
+                    if (!result)
                     {
-                        continue;
+                        Logger.LogDebug("Failed to insert {file}", file);
                     }
                 }
 
                 return Ok();
             } catch (Exception ex)
             {
-                Logger.LogError($"Failure to upload {ex}");
+                Logger.LogError("Failure to upload {ex}", ex);
 
                 return BadRequest("Failed to upload");
             }

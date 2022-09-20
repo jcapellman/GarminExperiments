@@ -8,7 +8,7 @@ using Microsoft.OpenApi.Models;
 
 namespace jcGAI.WebAPI
 {
-    public class Program
+    public static class Program
     {
         public static void Main(string[] args)
         {

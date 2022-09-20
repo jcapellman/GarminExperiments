@@ -34,7 +34,7 @@ namespace jcGAI.WebAPI.Services
 
         public async Task<bool> InsertActivityAsync(int UserId, byte[] file)
         {
-            await _mongoDBClient.GetCollection<Activities>(nameof(Activities)).InsertOneAsync(new Activities
+            await GetCollection<Activities>(nameof(Activities)).InsertOneAsync(new Activities
             {
                 GPXFileData = file,
                 TimeStamp = DateTime.Now,
@@ -45,6 +45,6 @@ namespace jcGAI.WebAPI.Services
         }
 
         public async Task<List<Activities>> GetActivitiesAsync(int UserId) => 
-            await _mongoDBClient.GetCollection<Activities>(nameof(Activities)).FindSync(a => a.UserId == UserId).ToListAsync();
+            await GetCollection<Activities>(nameof(Activities)).FindSync(a => a.UserId == UserId).ToListAsync();
     }
 }
