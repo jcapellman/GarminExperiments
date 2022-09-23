@@ -16,7 +16,7 @@ namespace jcGAI.WebAPI.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult Upload(List<IFormFile> files)
+        public async Task<ActionResult> UploadAsync(List<IFormFile> files)
         {
             try
             {
@@ -25,13 +25,18 @@ namespace jcGAI.WebAPI.Controllers
                     var stream = new MemoryStream((int)file.Length);
                     file.CopyTo(stream);
 
-                    Mongo.InsertActivityAsync(UserId, stream.ToArray());
+                    var result = await Mongo.InsertActivityAsync(UserId, stream.ToArray());
+
+                    if (!result)
+                    {
+                        Logger.LogDebug("Failed to insert {file}", file);
+                    }
                 }
 
                 return Ok();
             } catch (Exception ex)
             {
-                Logger.LogError($"Failure to upload {ex}");
+                Logger.LogError("Failure to upload {ex}", ex);
 
                 return BadRequest("Failed to upload");
             }

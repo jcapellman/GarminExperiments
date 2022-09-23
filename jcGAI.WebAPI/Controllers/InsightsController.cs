@@ -17,11 +17,14 @@ namespace jcGAI.WebAPI.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<InsightResponseItem>> GetInsightsAsync(DateTime? startTime = null, DateTime? endTime = null)
+        public async Task<ActionResult<List<InsightResponseItem>>> GetInsightsAsync(DateTime? startTime = null, DateTime? endTime = null)
         {
             var insights = await Mongo.GetActivitiesAsync(UserId);
 
-            return new InsightResponseItem();
+            return insights.Select(a => new InsightResponseItem { 
+                InsightJson = a.UserId.ToString(), 
+                InsightType = a.TimeStamp.ToString() 
+            }).ToList();
         }
     }
 }

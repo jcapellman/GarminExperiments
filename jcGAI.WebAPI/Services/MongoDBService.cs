@@ -32,17 +32,19 @@ namespace jcGAI.WebAPI.Services
             return _mongoDBClient.GetCollection<T>(collection);
         }
 
-        public async void InsertActivityAsync(int UserId, byte[] file)
+        public async Task<bool> InsertActivityAsync(int UserId, byte[] file)
         {
-            await _mongoDBClient.GetCollection<Activities>(nameof(Activities)).InsertOneAsync(new Activities
+            await GetCollection<Activities>(nameof(Activities)).InsertOneAsync(new Activities
             {
                 GPXFileData = file,
                 TimeStamp = DateTime.Now,
                 UserId = UserId
             });
+
+            return true;
         }
 
         public async Task<List<Activities>> GetActivitiesAsync(int UserId) => 
-            await _mongoDBClient.GetCollection<Activities>(nameof(Activities)).FindSync(a => a.UserId == UserId).ToListAsync();
+            await GetCollection<Activities>(nameof(Activities)).FindSync(a => a.UserId == UserId).ToListAsync();
     }
 }
