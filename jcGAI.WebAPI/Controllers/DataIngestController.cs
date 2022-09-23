@@ -22,11 +22,6 @@ namespace jcGAI.WebAPI.Controllers
             {
                 foreach (var file in files)
                 {
-                    if (file == null)
-                    {
-                        continue;
-                    }
-
                     var stream = new MemoryStream((int)file.Length);
                     file.CopyTo(stream);
 
