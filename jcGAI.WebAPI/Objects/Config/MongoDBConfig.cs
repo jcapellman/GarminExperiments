@@ -1,6 +1,6 @@
 ﻿namespace jcGAI.WebAPI.Objects.Config
 {
-    public class MongoDBConfig
+    public class MongoDbConfig
     {
         public string ConnectionString { get; set; }
 
@@ -8,7 +8,7 @@
 
         public string CollectionName { get; set; }
 
-        public MongoDBConfig()
+        public MongoDbConfig()
         {
             ConnectionString = string.Empty;
 

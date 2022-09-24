@@ -4,11 +4,11 @@ namespace jcGAI.WebAPI.Objects.NonRelational
 {
     public class Activities : BaseNonRelational
     {
-        public byte[] GPXFileData { get; set; }
+        public byte[] GpxFileData { get; set; }
 
         public Activities()
         {
-            GPXFileData = Array.Empty<byte>();
+            GpxFileData = Array.Empty<byte>();
         }
     }
 }

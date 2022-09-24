@@ -1,4 +1,5 @@
-﻿using jcGAI.WebAPI.Controllers.Base;
+﻿using System.Globalization;
+using jcGAI.WebAPI.Controllers.Base;
 using jcGAI.WebAPI.Objects.Json;
 using jcGAI.WebAPI.Services;
 
@@ -11,7 +12,7 @@ namespace jcGAI.WebAPI.Controllers
     [Route("api/v1/insights")]
     public class InsightsController : BaseController
     {
-        public InsightsController(ILogger<InsightsController> logger, MongoDBService mongo) : base(logger, mongo)
+        public InsightsController(ILogger<InsightsController> logger, MongoDbService mongo) : base(logger, mongo)
         {
         }
 
@@ -21,9 +22,10 @@ namespace jcGAI.WebAPI.Controllers
         {
             var insights = await Mongo.GetActivitiesAsync(UserId);
 
-            return insights.Select(a => new InsightResponseItem { 
+            return insights.Select(a => new InsightResponseItem {
+                Id = a.Id,
                 InsightJson = a.UserId.ToString(), 
-                InsightType = a.TimeStamp.ToString() 
+                InsightType = a.TimeStamp.ToString(CultureInfo.InvariantCulture) 
             }).ToList();
         }
     }

@@ -25,8 +25,7 @@ namespace jcGAI.WebAPI.Controllers
         {
             var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
-            var claims = result.Principal?.Identities?
-                .FirstOrDefault()?.Claims.Select(claim => new
+            var claims = result.Principal?.Identities.FirstOrDefault()?.Claims.Select(claim => new
                 {
                     claim.Issuer,
                     claim.OriginalIssuer,

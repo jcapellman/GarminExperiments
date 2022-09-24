@@ -10,7 +10,7 @@ namespace jcGAI.WebAPI.Controllers
     [Route("api/v1/activities")]
     public class ActivitiesController : BaseController
     {
-        protected ActivitiesController(ILogger<BaseController> logger, MongoDBService mongo) : base(logger, mongo)
+        protected ActivitiesController(ILogger<BaseController> logger, MongoDbService mongo) : base(logger, mongo)
         {
         }
 

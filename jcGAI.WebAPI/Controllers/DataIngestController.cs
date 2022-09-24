@@ -10,7 +10,7 @@ namespace jcGAI.WebAPI.Controllers
     [Route("api/v1/dataingest")]
     public class DataIngestController : BaseController
     {
-        public DataIngestController(ILogger<DataIngestController> logger, MongoDBService mongo) : base(logger, mongo)
+        public DataIngestController(ILogger<DataIngestController> logger, MongoDbService mongo) : base(logger, mongo)
         {
         }
 
@@ -23,7 +23,7 @@ namespace jcGAI.WebAPI.Controllers
                 foreach (var file in files)
                 {
                     var stream = new MemoryStream((int)file.Length);
-                    file.CopyTo(stream);
+                    await file.CopyToAsync(stream);
 
                     var result = await Mongo.InsertActivityAsync(UserId, stream.ToArray());
 

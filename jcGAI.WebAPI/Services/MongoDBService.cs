@@ -5,46 +5,44 @@ using Microsoft.Extensions.Options;
 
 using MongoDB.Driver;
 
-using System.Linq;
-
 namespace jcGAI.WebAPI.Services
 {
-    public class MongoDBService
+    public class MongoDbService
     {
-        private readonly MongoDBConfig _config;
-        private readonly IMongoDatabase _mongoDBClient;
+        private readonly MongoDbConfig _config;
+        private readonly IMongoDatabase _mongoDbClient;
 
-        public MongoDBService(IOptions<MongoDBConfig> configuration)
+        public MongoDbService(IOptions<MongoDbConfig> configuration)
         {
             _config = configuration.Value;
-            _mongoDBClient = new MongoClient(_config.ConnectionString).GetDatabase(_config.DatabaseName);
+            _mongoDbClient = new MongoClient(_config.ConnectionString).GetDatabase(_config.DatabaseName);
         }
 
         private IMongoCollection<T> GetCollection<T>(string? collectionName = null)
         {
             var collection = collectionName ?? _config.CollectionName;
 
-            if (_mongoDBClient.ListCollectionNames().ToEnumerable().All(c => c != collection))
+            if (_mongoDbClient.ListCollectionNames().ToEnumerable().All(c => c != collection))
             {
-                _mongoDBClient.CreateCollection(collection);
+                _mongoDbClient.CreateCollection(collection);
             }
 
-            return _mongoDBClient.GetCollection<T>(collection);
+            return _mongoDbClient.GetCollection<T>(collection);
         }
 
-        public async Task<bool> InsertActivityAsync(int UserId, byte[] file)
+        public async Task<bool> InsertActivityAsync(int userId, byte[] file)
         {
             await GetCollection<Activities>(nameof(Activities)).InsertOneAsync(new Activities
             {
-                GPXFileData = file,
+                GpxFileData = file,
                 TimeStamp = DateTime.Now,
-                UserId = UserId
+                UserId = userId
             });
 
             return true;
         }
 
-        public async Task<List<Activities>> GetActivitiesAsync(int UserId) => 
-            await GetCollection<Activities>(nameof(Activities)).FindSync(a => a.UserId == UserId).ToListAsync();
+        public async Task<List<Activities>> GetActivitiesAsync(int userId) => 
+            await GetCollection<Activities>(nameof(Activities)).FindSync(a => a.UserId == userId).ToListAsync();
     }
 }

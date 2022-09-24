@@ -12,9 +12,9 @@ namespace jcGAI.WebAPI.Controllers.Base
 
         protected readonly ILogger<BaseController> Logger;
 
-        protected readonly MongoDBService Mongo;
+        protected readonly MongoDbService Mongo;
         
-        protected BaseController(ILogger<BaseController> logger, MongoDBService mongo)
+        protected BaseController(ILogger<BaseController> logger, MongoDbService mongo)
         {
             Logger = logger;
             Mongo = mongo;

@@ -16,8 +16,8 @@ namespace jcGAI.WebAPI
 
             var oAuthConfig = builder.Configuration.GetSection("OAuth").Get<OAuthConfig>();
 
-            builder.Services.Configure<MongoDBConfig>(builder.Configuration.GetSection(AppConstants.DB_CONNECTION_MONGO));
-            builder.Services.AddSingleton<MongoDBService>();
+            builder.Services.Configure<MongoDbConfig>(builder.Configuration.GetSection(AppConstants.DbConnectionMongo));
+            builder.Services.AddSingleton<MongoDbService>();
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
