@@ -1,6 +1,8 @@
 ﻿using jcGAI.WebAPI.Objects.Config;
 using jcGAI.WebAPI.Objects.NonRelational;
+using jcGAI.WebAPI.Objects.NonRelational.Base;
 
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 using MongoDB.Driver;
@@ -30,6 +32,13 @@ namespace jcGAI.WebAPI.Services
             return _mongoDbClient.GetCollection<T>(collection);
         }
 
+        public async Task<Guid> InsertAsync<T>(T obj) where T : BaseNonRelational
+        {
+            await GetCollection<T>(typeof(T).Name).InsertOneAsync(obj);
+
+            return obj.Id;
+        }
+
         public async Task<bool> InsertActivityAsync(int userId, byte[] file)
         {
             await GetCollection<Activities>(nameof(Activities)).InsertOneAsync(new Activities
@@ -44,5 +53,12 @@ namespace jcGAI.WebAPI.Services
 
         public async Task<List<Activities>> GetActivitiesAsync(int userId) => 
             await GetCollection<Activities>(nameof(Activities)).FindSync(a => a.UserId == userId).ToListAsync();
+
+        public async Task<ActionResult<Guid>> InsertUserAsync(Users users)
+        {
+            await GetCollection<Users>(nameof(Users)).InsertOneAsync(users);
+
+            return users.Id;
+        }
     }
 }

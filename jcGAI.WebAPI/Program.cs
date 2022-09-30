@@ -2,8 +2,6 @@ using jcGAI.WebAPI.Common;
 using jcGAI.WebAPI.Objects.Config;
 using jcGAI.WebAPI.Services;
 
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.OpenApi.Models;
 
 namespace jcGAI.WebAPI
@@ -13,9 +11,7 @@ namespace jcGAI.WebAPI
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
-            var oAuthConfig = builder.Configuration.GetSection("OAuth").Get<OAuthConfig>();
-
+            
             builder.Services.Configure<MongoDbConfig>(builder.Configuration.GetSection(AppConstants.DbConnectionMongo));
             builder.Services.AddSingleton<MongoDbService>();
 
@@ -30,36 +26,12 @@ namespace jcGAI.WebAPI
                 c.EnableAnnotations();
             });
 
-            builder.Services.AddAuthentication(options =>
-            {
-                options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = GoogleDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
-            })
-            .AddCookie(options =>
-            {
-                options.LoginPath = "/account/google-login";
-            })
-            .AddGoogle(options =>
-            {
-                options.ClientId = oAuthConfig.ClientId;
-                options.ClientSecret = oAuthConfig.Secret;
-            });
-
             var app = builder.Build();
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
+            
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.OAuthClientId(oAuthConfig.ClientId);
-                    c.OAuthClientSecret(oAuthConfig.Secret);
-                    c.OAuthUseBasicAuthenticationWithAccessCodeGrant();
-                });
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();

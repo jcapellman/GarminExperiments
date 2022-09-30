@@ -1,10 +1,8 @@
-﻿using MongoDB.Bson;
-
-namespace jcGAI.WebAPI.Objects.Json
+﻿namespace jcGAI.WebAPI.Objects.Json
 {
     public class InsightResponseItem
     {
-        public ObjectId Id { get; set; }
+        public Guid Id { get; set; }
 
         public string InsightType { get; set; }
 

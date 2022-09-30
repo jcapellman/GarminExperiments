@@ -1,39 +1,28 @@
-﻿using Microsoft.AspNetCore.Authentication.Google;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authentication.Cookies;
+﻿using Microsoft.AspNetCore.Mvc;
 
-using System.Text.Json;
+using jcGAI.WebAPI.Controllers.Base;
+using jcGAI.WebAPI.Objects.Json;
+using jcGAI.WebAPI.Objects.NonRelational;
+using jcGAI.WebAPI.Services;
+
+using MongoDB.Bson;
 
 namespace jcGAI.WebAPI.Controllers
 {
-    [AllowAnonymous, Route("account")]
-    public class AccountController : ControllerBase
+    [ApiController]
+    [Route("api/v1/account")]
+    public class AccountController : BaseController
     {
-        [Route("google-login")]
-        [HttpGet]
-        public IActionResult GoogleLogin()
+        public AccountController(ILogger<AccountController> logger, MongoDbService mongo) : base(logger, mongo)
         {
-            var properties = new AuthenticationProperties { RedirectUri = Url.Action("GoogleResponse") };
-            return Challenge(properties, GoogleDefaults.AuthenticationScheme);
         }
 
-        [Route("google-response")]
-        [HttpGet]
-        public async Task<ActionResult> GoogleResponse()
-        {
-            var result = await HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-
-            var claims = result.Principal?.Identities.FirstOrDefault()?.Claims.Select(claim => new
-                {
-                    claim.Issuer,
-                    claim.OriginalIssuer,
-                    claim.Type,
-                    claim.Value
-                });
-
-            return Ok(JsonSerializer.Serialize(claims));
-        }
+        [HttpPost]
+        public async Task<ActionResult<Guid>> CreateUser(UserRequestItem userRequestItem) =>
+            await Mongo.InsertUserAsync(new Users
+            {
+                Username = userRequestItem.Username,
+                Password = userRequestItem.Password
+            });
     }
 }
