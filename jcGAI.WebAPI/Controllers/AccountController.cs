@@ -6,6 +6,7 @@ using jcGAI.WebAPI.Objects.NonRelational;
 using jcGAI.WebAPI.Services;
 
 using MongoDB.Bson;
+using jcGAI.WebAPI.Common;
 
 namespace jcGAI.WebAPI.Controllers
 {
@@ -15,6 +16,19 @@ namespace jcGAI.WebAPI.Controllers
     {
         public AccountController(ILogger<AccountController> logger, MongoDbService mongo) : base(logger, mongo)
         {
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<string>> Login(string username, string password)
+        {
+            var existingUser = await Mongo.GetOneAsync<Users>(a => a.Username == username && a.Password == password.ToSHA256());
+
+            if (existingUser == null)
+            {
+                return BadRequest("Invalid username or password");
+            }
+
+            return string.Empty;
         }
 
         [HttpPost]
@@ -30,7 +44,7 @@ namespace jcGAI.WebAPI.Controllers
             var result = await Mongo.InsertUserAsync(new Users
             {
                 Username = userRequestItem.Username,
-                Password = userRequestItem.Password
+                Password = userRequestItem.Password.ToSHA256()
             });
 
             return result != Guid.Empty;
