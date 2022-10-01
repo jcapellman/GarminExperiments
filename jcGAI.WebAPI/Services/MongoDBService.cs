@@ -20,43 +20,31 @@ namespace jcGAI.WebAPI.Services
             _mongoDbClient = new MongoClient(_config.ConnectionString).GetDatabase(_config.DatabaseName);
         }
 
-        private IMongoCollection<T> GetCollection<T>(string? collectionName = null)
+        private IMongoCollection<T> Collections<T>()
         {
-            var collection = collectionName ?? _config.CollectionName;
+                var collection = nameof(T);
 
-            if (_mongoDbClient.ListCollectionNames().ToEnumerable().All(c => c != collection))
-            {
-                _mongoDbClient.CreateCollection(collection);
-            }
+                if (_mongoDbClient.ListCollectionNames().ToEnumerable().All(c => c != collection))
+                {
+                    _mongoDbClient.CreateCollection(collection);
+                }
 
-            return _mongoDbClient.GetCollection<T>(collection);
+                return _mongoDbClient.GetCollection<T>(collection);
         }
 
         public async Task<Guid> InsertAsync<T>(T obj) where T : BaseNonRelational
         {
-            await GetCollection<T>(typeof(T).Name).InsertOneAsync(obj);
+            await Collections<T>().InsertOneAsync(obj);
 
             return obj.Id;
         }
 
-        public async Task<bool> InsertActivityAsync(int userId, byte[] file)
+        public async Task<List<T>> GetManyAsync<T>(Guid userId) where T : BaseNonRelational =>
+            await (await Collections<T>().FindAsync(a => a.UserId == userId)).ToListAsync();
+
+        public async Task<Guid> InsertUserAsync(Users users)
         {
-            await GetCollection<Activities>(nameof(Activities)).InsertOneAsync(new Activities
-            {
-                GpxFileData = file,
-                TimeStamp = DateTime.Now,
-                UserId = userId
-            });
-
-            return true;
-        }
-
-        public async Task<List<Activities>> GetActivitiesAsync(int userId) => 
-            await GetCollection<Activities>(nameof(Activities)).FindSync(a => a.UserId == userId).ToListAsync();
-
-        public async Task<ActionResult<Guid>> InsertUserAsync(Users users)
-        {
-            await GetCollection<Users>(nameof(Users)).InsertOneAsync(users);
+            await Collections<Users>().InsertOneAsync(users);
 
             return users.Id;
         }

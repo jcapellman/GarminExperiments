@@ -16,6 +16,6 @@ namespace jcGAI.WebAPI.Controllers
 
         [HttpGet]
         public async Task<ActionResult<List<Activities>>> GetAsync(DateTime? startTime = null, DateTime? endTime = null) 
-            => await Mongo.GetActivitiesAsync(UserId);
+            => await Mongo.GetManyAsync<Activities>(UserId);
     }
 }

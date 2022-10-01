@@ -1,4 +1,5 @@
 using jcGAI.WebAPI.Controllers.Base;
+using jcGAI.WebAPI.Objects.NonRelational;
 using jcGAI.WebAPI.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -25,9 +26,14 @@ namespace jcGAI.WebAPI.Controllers
                     var stream = new MemoryStream((int)file.Length);
                     await file.CopyToAsync(stream);
 
-                    var result = await Mongo.InsertActivityAsync(UserId, stream.ToArray());
+                    var result = await Mongo.InsertAsync(new Activities
+                    {
+                        GpxFileData = stream.ToArray(),
+                        UserId = UserId,
+                        TimeStamp = DateTime.Now
+                    });
 
-                    if (!result)
+                    if (result != Guid.Empty)
                     {
                         Logger.LogDebug("Failed to insert {file}", file);
                     }

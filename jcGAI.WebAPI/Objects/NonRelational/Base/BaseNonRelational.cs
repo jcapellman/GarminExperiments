@@ -9,6 +9,6 @@ namespace jcGAI.WebAPI.Objects.NonRelational.Base
 
         public DateTime TimeStamp { get; set; }
 
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
     }
 }

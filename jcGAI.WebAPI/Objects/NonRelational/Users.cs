@@ -9,5 +9,12 @@
         public string Username { get; set; }
 
         public string Password { get; set; }
+
+        public Users()
+        {
+            Username = string.Empty;
+
+            Password = string.Empty;
+        }
     }
 }

@@ -18,11 +18,15 @@ namespace jcGAI.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Guid>> CreateUser(UserRequestItem userRequestItem) =>
-            await Mongo.InsertUserAsync(new Users
+        public async Task<ActionResult<bool>> CreateUser(UserRequestItem userRequestItem)
+        {
+            var result = await Mongo.InsertUserAsync(new Users
             {
                 Username = userRequestItem.Username,
                 Password = userRequestItem.Password
             });
+
+            return result != Guid.Empty;
+        }
     }
 }
