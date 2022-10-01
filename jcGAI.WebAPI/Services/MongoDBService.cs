@@ -22,14 +22,14 @@ namespace jcGAI.WebAPI.Services
 
         private IMongoCollection<T> Collections<T>()
         {
-                var collection = nameof(T);
+            var collection = typeof(T).Name;
 
-                if (_mongoDbClient.ListCollectionNames().ToEnumerable().All(c => c != collection))
-                {
-                    _mongoDbClient.CreateCollection(collection);
-                }
+            if (_mongoDbClient.ListCollectionNames().ToEnumerable().All(c => c != collection))
+            {
+                _mongoDbClient.CreateCollection(collection);
+            }
 
-                return _mongoDbClient.GetCollection<T>(collection);
+            return _mongoDbClient.GetCollection<T>(collection);
         }
 
         public async Task<Guid> InsertAsync<T>(T obj) where T : BaseNonRelational
