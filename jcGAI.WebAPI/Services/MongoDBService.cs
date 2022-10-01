@@ -2,7 +2,6 @@
 using jcGAI.WebAPI.Objects.NonRelational;
 using jcGAI.WebAPI.Objects.NonRelational.Base;
 
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 using MongoDB.Driver;
@@ -39,14 +38,19 @@ namespace jcGAI.WebAPI.Services
             return obj.Id;
         }
 
-        public async Task<List<T>> GetManyAsync<T>(Guid userId) where T : BaseNonRelational =>
-            await (await Collections<T>().FindAsync(a => a.UserId == userId)).ToListAsync();
+        public async Task<List<T>> GetManyAsync<T>(Func<T, bool> expression) where T : BaseNonRelational =>
+            await (await Collections<T>().FindAsync(expression)).ToListAsync();
 
         public async Task<Guid> InsertUserAsync(Users users)
         {
             await Collections<Users>().InsertOneAsync(users);
 
             return users.Id;
+        }
+
+        public async Task<T> GetOneAsync<T>(Func<T, bool> expression)
+        {
+            return await(await Collections<T>().FindAsync(expression)).FirstOrDefaultAsync();
         }
     }
 }

@@ -21,7 +21,7 @@ namespace jcGAI.WebAPI.Controllers
         [Authorize]
         public async Task<ActionResult<List<InsightResponseItem>>> GetInsightsAsync(DateTime? startTime = null, DateTime? endTime = null)
         {
-            var insights = await Mongo.GetManyAsync<Activities>(UserId);
+            var insights = await Mongo.GetManyAsync<Activities>(a => a.UserId == UserId);
 
             return insights.Select(a => new InsightResponseItem {
                 Id = a.Id,

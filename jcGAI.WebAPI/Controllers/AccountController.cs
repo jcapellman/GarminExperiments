@@ -20,6 +20,13 @@ namespace jcGAI.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<bool>> CreateUser(UserRequestItem userRequestItem)
         {
+            var existingUser = await Mongo.GetOneAsync<Users>(a => a.Username == userRequestItem.Username);
+
+            if (existingUser != null)
+            {
+                return BadRequest($"Existing username ({userRequestItem.Username}) was found");
+            }
+
             var result = await Mongo.InsertUserAsync(new Users
             {
                 Username = userRequestItem.Username,
