@@ -6,7 +6,7 @@ namespace jcGAI.WebAPI.Controllers.Base
 {
     public class BaseController : ControllerBase
     {
-        public Guid UserId;
+        protected Guid UserId;
 
         protected readonly ILogger<BaseController> Logger;
 
