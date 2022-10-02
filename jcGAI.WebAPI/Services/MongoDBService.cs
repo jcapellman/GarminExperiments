@@ -5,6 +5,7 @@ using jcGAI.WebAPI.Objects.NonRelational.Base;
 using Microsoft.Extensions.Options;
 
 using MongoDB.Driver;
+using System.Linq.Expressions;
 
 namespace jcGAI.WebAPI.Services
 {
@@ -38,8 +39,8 @@ namespace jcGAI.WebAPI.Services
             return obj.Id;
         }
 
-        public async Task<List<T>> GetManyAsync<T>(Func<T, bool> expression) where T : BaseNonRelational =>
-            await (await Collections<T>().FindAsync(expression)).ToListAsync();
+        public IEnumerable<T> GetMany<T>(Func<T, bool> expression) where T : BaseNonRelational =>
+            Collections<T>().AsQueryable().Where(expression);
 
         public async Task<Guid> InsertUserAsync(Users users)
         {
@@ -48,9 +49,7 @@ namespace jcGAI.WebAPI.Services
             return users.Id;
         }
 
-        public async Task<T> GetOneAsync<T>(Func<T, bool> expression)
-        {
-            return await(await Collections<T>().FindAsync(expression)).FirstOrDefaultAsync();
-        }
+        public T GetOne<T>(Func<T, bool> expression) =>
+            Collections<T>().AsQueryable().FirstOrDefault(expression);
     }
 }

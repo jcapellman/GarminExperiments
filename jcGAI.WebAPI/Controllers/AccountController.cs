@@ -5,7 +5,6 @@ using jcGAI.WebAPI.Objects.Json;
 using jcGAI.WebAPI.Objects.NonRelational;
 using jcGAI.WebAPI.Services;
 
-using MongoDB.Bson;
 using jcGAI.WebAPI.Common;
 
 namespace jcGAI.WebAPI.Controllers
@@ -19,9 +18,9 @@ namespace jcGAI.WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<string>> Login(string username, string password)
+        public ActionResult<string> Login(string username, string password)
         {
-            var existingUser = await Mongo.GetOneAsync<Users>(a => a.Username == username && a.Password == password.ToSHA256());
+            var existingUser = Mongo.GetOne<Users>(a => a.Username == username && a.Password == password.ToSHA256());
 
             if (existingUser == null)
             {
@@ -34,7 +33,7 @@ namespace jcGAI.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<bool>> CreateUser(UserRequestItem userRequestItem)
         {
-            var existingUser = await Mongo.GetOneAsync<Users>(a => a.Username == userRequestItem.Username);
+            var existingUser = Mongo.GetOne<Users>(a => a.Username == userRequestItem.Username);
 
             if (existingUser != null)
             {
