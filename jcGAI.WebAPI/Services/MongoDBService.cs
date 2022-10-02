@@ -12,9 +12,9 @@ namespace jcGAI.WebAPI.Services
     {
         private readonly IMongoDatabase _mongoDbClient;
 
-        public MongoDbService(IOptions<MongoDbConfig> configuration)
+        public MongoDbService(MongoDbConfig configuration)
         {
-            _mongoDbClient = new MongoClient(configuration.Value.ConnectionString).GetDatabase(configuration.Value.DatabaseName);
+            _mongoDbClient = new MongoClient(configuration.ConnectionString).GetDatabase(configuration.DatabaseName);
         }
 
         private IMongoCollection<T> Collections<T>()

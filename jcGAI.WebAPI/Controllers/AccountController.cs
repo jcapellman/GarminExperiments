@@ -2,10 +2,9 @@
 
 using jcGAI.WebAPI.Controllers.Base;
 using jcGAI.WebAPI.Objects.Json;
-using jcGAI.WebAPI.Objects.NonRelational;
 using jcGAI.WebAPI.Services;
 
-using jcGAI.WebAPI.Common;
+using jcGAI.WebAPI.Managers;
 
 namespace jcGAI.WebAPI.Controllers
 {
@@ -13,16 +12,19 @@ namespace jcGAI.WebAPI.Controllers
     [Route("api/v1/account")]
     public class AccountController : BaseController
     {
-        public AccountController(ILogger<AccountController> logger, MongoDbService mongo) : base(logger, mongo)
+        private readonly UserManager _userManager;
+
+        public AccountController(ILogger<AccountController> logger, MongoDbService mongo) : base(logger)
         {
+            _userManager = new UserManager(mongo);
         }
 
         [HttpGet]
         public ActionResult<string> Login(string username, string password)
         {
-            var existingUser = Mongo.GetOne<Users>(a => a.Username == username && a.Password == password.ToSHA256());
+            var (Success, _) = _userManager.Login(username, password);
 
-            if (existingUser == null)
+            if (!Success)
             {
                 return BadRequest("Invalid username or password");
             }
@@ -33,20 +35,14 @@ namespace jcGAI.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<bool>> CreateUser(UserRequestItem userRequestItem)
         {
-            var existingUser = Mongo.GetOne<Users>(a => a.Username == userRequestItem.Username);
+            var (Success, ErrorString) = await _userManager.CreateUserAsync(userRequestItem.Username, userRequestItem.Password);
 
-            if (existingUser != null)
+            if (Success)
             {
-                return BadRequest($"Existing username ({userRequestItem.Username}) was found");
+                return true;
             }
 
-            var result = await Mongo.InsertUserAsync(new Users
-            {
-                Username = userRequestItem.Username,
-                Password = userRequestItem.Password.ToSHA256()
-            });
-
-            return result != Guid.Empty;
+            return BadRequest(ErrorString);
         }
     }
 }

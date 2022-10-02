@@ -1,5 +1,5 @@
 using jcGAI.WebAPI.Controllers.Base;
-using jcGAI.WebAPI.Objects.NonRelational;
+using jcGAI.WebAPI.Managers;
 using jcGAI.WebAPI.Services;
 
 using Microsoft.AspNetCore.Authorization;
@@ -11,8 +11,11 @@ namespace jcGAI.WebAPI.Controllers
     [Route("api/v1/dataingest")]
     public class DataIngestController : BaseController
     {
-        public DataIngestController(ILogger<DataIngestController> logger, MongoDbService mongo) : base(logger, mongo)
+        private readonly DataIngestManager _manager;
+
+        public DataIngestController(ILogger<DataIngestController> logger, MongoDbService mongo) : base(logger)
         {
+            _manager = new DataIngestManager(mongo);
         }
 
         [HttpPost]
@@ -26,14 +29,9 @@ namespace jcGAI.WebAPI.Controllers
                     var stream = new MemoryStream((int)file.Length);
                     await file.CopyToAsync(stream);
 
-                    var result = await Mongo.InsertAsync(new Activities
-                    {
-                        GpxFileData = stream.ToArray(),
-                        UserId = UserId,
-                        TimeStamp = DateTime.Now
-                    });
+                    var result = await _manager.InsertDataAsync(stream.ToArray(), UserId);
 
-                    if (result != Guid.Empty)
+                    if (!result)
                     {
                         Logger.LogDebug("Failed to insert {file}", file);
                     }

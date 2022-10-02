@@ -1,4 +1,5 @@
 ﻿using jcGAI.WebAPI.Controllers.Base;
+using jcGAI.WebAPI.Managers;
 using jcGAI.WebAPI.Objects.NonRelational;
 using jcGAI.WebAPI.Services;
 
@@ -10,14 +11,15 @@ namespace jcGAI.WebAPI.Controllers
     [Route("api/v1/activities")]
     public class ActivitiesController : BaseController
     {
-        protected ActivitiesController(ILogger<BaseController> logger, MongoDbService mongo) : base(logger, mongo)
+        private readonly InsightsManager _manager;
+
+        protected ActivitiesController(ILogger<ActivitiesController> logger, MongoDbService mongo) : base(logger)
         {
+            _manager = new InsightsManager(mongo);
         }
 
         [HttpGet]
         public IEnumerable<Activities> Get(DateTime? startTime = null, DateTime? endTime = null) 
-            => Mongo.GetMany<Activities>(a => a.UserId == UserId && 
-            (!startTime.HasValue || a.TimeStamp >= startTime.Value) && 
-            (!endTime.HasValue || a.TimeStamp <= endTime.Value));
+            => _manager.GetActivities(UserId, startTime, endTime);
     }
 }
