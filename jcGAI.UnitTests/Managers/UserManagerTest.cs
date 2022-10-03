@@ -4,13 +4,13 @@ using jcGAI.WebAPI.Objects.Config;
 namespace jcGAI.UnitTests.Managers
 {
     [TestClass]
-    internal class UserManagerTest
+    public class UserManagerTest
     {
         [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void UserManager_DefaultConstructor()
         {
-            var manager = new UserManager(new WebAPI.Services.MongoDbService(new MongoDbConfig()));
-
+            _ = new UserManager(new WebAPI.Services.MongoDbService(new MongoDbConfig()));
         }
     }
 }

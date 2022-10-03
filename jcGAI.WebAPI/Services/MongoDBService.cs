@@ -2,8 +2,6 @@
 using jcGAI.WebAPI.Objects.NonRelational;
 using jcGAI.WebAPI.Objects.NonRelational.Base;
 
-using Microsoft.Extensions.Options;
-
 using MongoDB.Driver;
 
 namespace jcGAI.WebAPI.Services
@@ -14,6 +12,16 @@ namespace jcGAI.WebAPI.Services
 
         public MongoDbService(MongoDbConfig configuration)
         {
+            if (string.IsNullOrEmpty(configuration.DatabaseName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(configuration));
+            }
+
+            if (string.IsNullOrEmpty(configuration.ConnectionString))
+            {
+                throw new ArgumentOutOfRangeException(nameof(configuration));
+            }
+
             _mongoDbClient = new MongoClient(configuration.ConnectionString).GetDatabase(configuration.DatabaseName);
         }
 
