@@ -45,7 +45,7 @@ jobs:
           
           dotnet tool update dotnet-reportgenerator-globaltool -g
           
-            dotnet test .\src\jcGAI.UnitTests\jcGAI.UnitTests.csproj --no-build --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+            dotnet test jcGAI.UnitTests\jcGAI.UnitTests.csproj --no-build --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
           reportgenerator "-reports:*\jcGAI.UnitTests\TestResults\*\coverage.opencover.xml" "-targetdir:sonarqubecoverage" "-reporttypes:SonarQube"
           
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
