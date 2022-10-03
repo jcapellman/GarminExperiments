@@ -9,13 +9,10 @@ namespace jcGAI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/v1/dataingest")]
-    public class DataIngestController : BaseController
+    public class DataIngestController : BaseController<DataIngestManager>
     {
-        private readonly DataIngestManager _manager;
-
-        public DataIngestController(ILogger<DataIngestController> logger, MongoDbService mongo) : base(logger)
+        public DataIngestController(ILogger<DataIngestController> logger, MongoDbService mongo) : base(logger, mongo)
         {
-            _manager = new DataIngestManager(mongo);
         }
 
         [HttpPost]

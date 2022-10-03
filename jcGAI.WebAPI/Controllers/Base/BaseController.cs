@@ -1,16 +1,23 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using jcGAI.WebAPI.Managers.Base;
+using jcGAI.WebAPI.Services;
+
+using Microsoft.AspNetCore.Mvc;
 
 namespace jcGAI.WebAPI.Controllers.Base
 {
-    public class BaseController : ControllerBase
+    public class BaseController<T> : ControllerBase where T : BaseManager
     {
         protected Guid UserId;
 
-        protected readonly ILogger<BaseController> Logger;
+        protected readonly ILogger<BaseController<T>> Logger;
 
-        protected BaseController(ILogger<BaseController> logger)
+        protected readonly T _manager;
+
+        protected BaseController(ILogger<BaseController<T>> logger, MongoDbService mongo)
         {
             Logger = logger;
+
+            _manager = Activator.CreateInstance(typeof(T), mongo) as T ?? throw new NullReferenceException(nameof(_manager));
         }
     }
 }

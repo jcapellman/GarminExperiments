@@ -10,19 +10,16 @@ namespace jcGAI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/v1/account")]
-    public class AccountController : BaseController
+    public class AccountController : BaseController<UserManager>
     {
-        private readonly UserManager _userManager;
-
-        public AccountController(ILogger<AccountController> logger, MongoDbService mongo) : base(logger)
+        public AccountController(ILogger<AccountController> logger, MongoDbService mongo) : base(logger, mongo)
         {
-            _userManager = new UserManager(mongo);
         }
 
         [HttpGet]
         public ActionResult<string> Login(string username, string password)
         {
-            var (Success, _) = _userManager.Login(username, password);
+            var (Success, _) = _manager.Login(username, password);
 
             if (!Success)
             {
@@ -35,7 +32,7 @@ namespace jcGAI.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<bool>> CreateUser(UserRequestItem userRequestItem)
         {
-            var (Success, ErrorString) = await _userManager.CreateUserAsync(userRequestItem.Username, userRequestItem.Password);
+            var (Success, ErrorString) = await _manager.CreateUserAsync(userRequestItem.Username, userRequestItem.Password);
 
             if (Success)
             {

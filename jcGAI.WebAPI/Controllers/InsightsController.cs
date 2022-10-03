@@ -11,13 +11,10 @@ namespace jcGAI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/v1/insights")]
-    public class InsightsController : BaseController
+    public class InsightsController : BaseController<InsightsManager>
     {
-        private readonly InsightsManager _manager;
-
-        public InsightsController(ILogger<InsightsController> logger, MongoDbService mongo) : base(logger)
+        public InsightsController(ILogger<InsightsController> logger, MongoDbService mongo) : base(logger, mongo)
         {
-            _manager = new InsightsManager(mongo);
         }
 
         [HttpGet]
