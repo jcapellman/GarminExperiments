@@ -8,3 +8,6 @@ Repository for a SaaS Insights Platform on your Garmin data (specifically Cyclin
 TBD
 
 ## Releases
+
+## Deployment
+Either running the REST Service on bare metal with nginx or through Docker.
