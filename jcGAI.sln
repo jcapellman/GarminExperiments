@@ -5,7 +5,7 @@ VisualStudioVersion = 17.3.32811.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jcGAI.WebAPI", "jcGAI.WebAPI\jcGAI.WebAPI.csproj", "{7E62C46F-8ECF-4B7B-8265-936C472D24D4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "jcGAI.UnitTests", "jcGAI.UnitTests\jcGAI.UnitTests.csproj", "{0CAC9550-B0F6-4CD8-91E5-81B752B6FD3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jcGAI.UnitTests", "jcGAI.UnitTests\jcGAI.UnitTests.csproj", "{0CAC9550-B0F6-4CD8-91E5-81B752B6FD3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
