@@ -2,28 +2,26 @@
 
 using jcGAI.WebAPI.Controllers.Base;
 using jcGAI.WebAPI.Objects.Json;
-using jcGAI.WebAPI.Objects.NonRelational;
 using jcGAI.WebAPI.Services;
 
-using MongoDB.Bson;
-using jcGAI.WebAPI.Common;
+using jcGAI.WebAPI.Managers;
 
 namespace jcGAI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/v1/account")]
-    public class AccountController : BaseController
+    public class AccountController : BaseController<UserManager>
     {
         public AccountController(ILogger<AccountController> logger, MongoDbService mongo) : base(logger, mongo)
         {
         }
 
         [HttpGet]
-        public async Task<ActionResult<string>> Login(string username, string password)
+        public ActionResult<string> Login(string username, string password)
         {
-            var existingUser = await Mongo.GetOneAsync<Users>(a => a.Username == username && a.Password == password.ToSHA256());
+            var (Success, _) = _manager.Login(username, password);
 
-            if (existingUser == null)
+            if (!Success)
             {
                 return BadRequest("Invalid username or password");
             }
@@ -34,20 +32,14 @@ namespace jcGAI.WebAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<bool>> CreateUser(UserRequestItem userRequestItem)
         {
-            var existingUser = await Mongo.GetOneAsync<Users>(a => a.Username == userRequestItem.Username);
+            var (Success, ErrorString) = await _manager.CreateUserAsync(userRequestItem.Username, userRequestItem.Password);
 
-            if (existingUser != null)
+            if (Success)
             {
-                return BadRequest($"Existing username ({userRequestItem.Username}) was found");
+                return true;
             }
 
-            var result = await Mongo.InsertUserAsync(new Users
-            {
-                Username = userRequestItem.Username,
-                Password = userRequestItem.Password.ToSHA256()
-            });
-
-            return result != Guid.Empty;
+            return BadRequest(ErrorString);
         }
     }
 }

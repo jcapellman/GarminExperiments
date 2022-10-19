@@ -19,13 +19,6 @@ jobs:
         dotnet-version: 6.0.x
     - name: Restore dependencies
       run: dotnet restore jcGAI.WebAPI/jcGAI.WebAPI.csproj
-    - name: App Settings Variable Substitution
-      uses: microsoft/variable-substitution@v1
-      with:
-        files: 'jcGAI.WebAPI/appsettings.json'
-      env:
-        OAuth.ClientId: ${{ secrets.OATH_CLIENTID }}
-        OAuth.Secret: ${{ secrets.OATH_SECRET }}
     - name: Build
       run: dotnet build --no-restore jcGAI.WebAPI/jcGAI.WebAPI.csproj
     - name: Test

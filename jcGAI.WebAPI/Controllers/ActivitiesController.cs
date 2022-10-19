@@ -1,4 +1,5 @@
 ﻿using jcGAI.WebAPI.Controllers.Base;
+using jcGAI.WebAPI.Managers;
 using jcGAI.WebAPI.Objects.NonRelational;
 using jcGAI.WebAPI.Services;
 
@@ -8,14 +9,14 @@ namespace jcGAI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/v1/activities")]
-    public class ActivitiesController : BaseController
+    public class ActivitiesController : BaseController<InsightsManager>
     {
-        protected ActivitiesController(ILogger<BaseController> logger, MongoDbService mongo) : base(logger, mongo)
+        protected ActivitiesController(ILogger<ActivitiesController> logger, MongoDbService mongo) : base(logger, mongo)
         {
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<Activities>>> GetAsync(DateTime? startTime = null, DateTime? endTime = null) 
-            => await Mongo.GetManyAsync<Activities>(a => a.UserId == UserId);
+        public IEnumerable<Activities> Get(DateTime? startTime = null, DateTime? endTime = null) 
+            => _manager.GetActivities(UserId, startTime, endTime);
     }
 }

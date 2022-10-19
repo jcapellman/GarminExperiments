@@ -40,6 +40,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"jcapellman_jcGAI_AYNM0UVr1XjYoLocacUE" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"jcapellman_jcGAI_AYNM0UVr1XjYoLocacUE" /d:sonar.login="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" /d:sonar.coverageReportPaths="..\sonarqubecoverage\SonarQube.xml"
           dotnet build
+          
+          dotnet tool update dotnet-reportgenerator-globaltool -g
+        
+          dotnet test jcGAI.UnitTests\jcGAI.UnitTests.csproj --no-build --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
+          
+          reportgenerator "-reports:*\jcGAI.UnitTests\TestResults\*\coverage.opencover.xml" "-targetdir:..\sonarqubecoverage\SonarQube.xml" "-reporttypes:SonarQube"
+          
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
