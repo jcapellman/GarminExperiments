@@ -5,6 +5,7 @@ using jcGAI.WebAPI.Objects.Json;
 using jcGAI.WebAPI.Services;
 
 using jcGAI.WebAPI.Managers;
+using jcGAI.WebAPI.Common;
 
 namespace jcGAI.WebAPI.Controllers
 {
@@ -21,12 +22,12 @@ namespace jcGAI.WebAPI.Controllers
         {
             var result = await _manager.LoginAsync(username, password);
 
-            if (!result.Value)
+            if (result.Value == null)
             {
                 return BadRequest("Invalid username or password");
             }
 
-            return string.Empty;
+            return JWTIO.GenerateToken(result.Value.Value);
         }
 
         [HttpPost]

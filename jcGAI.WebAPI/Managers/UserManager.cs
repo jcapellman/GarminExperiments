@@ -12,11 +12,11 @@ namespace jcGAI.WebAPI.Managers
         {
         }
 
-        public async Task<ReturnSet<bool>> LoginAsync(string username, string password)
+        public async Task<ReturnSet<Guid?>> LoginAsync(string username, string password)
         {
             var user = await Mongo.GetOneAsync<Users>(a => a.Username == username && a.Password == password.ToSHA256());
 
-            return new ReturnSet<bool>(user != null);
+            return new ReturnSet<Guid?>(user?.Id);
         }
 
         public async Task<ReturnSet<bool>> CreateUserAsync(string username, string password)
