@@ -16,7 +16,7 @@ namespace jcGAI.WebAPI.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Activities> Get(DateTime? startTime = null, DateTime? endTime = null) 
-            => _manager.GetActivities(UserId, startTime, endTime);
+        public async Task<IEnumerable<Activities>> GetAsync(DateTime? startTime = null, DateTime? endTime = null) 
+            => await _manager.GetActivitiesAsync(UserId, startTime, endTime);
     }
 }

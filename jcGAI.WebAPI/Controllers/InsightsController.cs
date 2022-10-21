@@ -19,9 +19,9 @@ namespace jcGAI.WebAPI.Controllers
 
         [HttpGet]
         [Authorize]
-        public ActionResult<List<InsightResponseItem>> GetInsights(DateTime? startTime = null, DateTime? endTime = null)
+        public async Task<ActionResult<List<InsightResponseItem>>> GetInsightsAsync(DateTime? startTime = null, DateTime? endTime = null)
         {
-            var insights = _manager.GetActivities(UserId, startTime, endTime);
+            var insights = await _manager.GetActivitiesAsync(UserId, startTime, endTime);
 
             return insights.Select(a => new InsightResponseItem {
                 InsightJson = a.UserId.ToString(), 

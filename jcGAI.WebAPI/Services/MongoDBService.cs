@@ -2,8 +2,6 @@
 using jcGAI.WebAPI.Objects.NonRelational;
 using jcGAI.WebAPI.Objects.NonRelational.Base;
 
-using Microsoft.Extensions.Options;
-
 using MongoDB.Driver;
 using System.Linq.Expressions;
 
@@ -11,13 +9,11 @@ namespace jcGAI.WebAPI.Services
 {
     public class MongoDbService
     {
-        private readonly MongoDbConfig _config;
         private readonly IMongoDatabase _mongoDbClient;
 
-        public MongoDbService(IOptions<MongoDbConfig> configuration)
+        public MongoDbService(MongoDbConfig configuration)
         {
-            _config = configuration.Value;
-            _mongoDbClient = new MongoClient(_config.ConnectionString).GetDatabase(_config.DatabaseName);
+            _mongoDbClient = new MongoClient(configuration.ConnectionString).GetDatabase(configuration.DatabaseName);
         }
 
         private IMongoCollection<T> Collections<T>()

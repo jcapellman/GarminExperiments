@@ -17,11 +17,11 @@ namespace jcGAI.WebAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<string> Login(string username, string password)
+        public async Task<ActionResult<string>> LoginAsync(string username, string password)
         {
-            var (Success, _) = _manager.Login(username, password);
+            var result = await _manager.LoginAsync(username, password);
 
-            if (!Success)
+            if (!result.Value)
             {
                 return BadRequest("Invalid username or password");
             }
@@ -30,16 +30,16 @@ namespace jcGAI.WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<bool>> CreateUser(UserRequestItem userRequestItem)
+        public async Task<ActionResult<bool>> CreateUserAsync(UserRequestItem userRequestItem)
         {
-            var (Success, ErrorString) = await _manager.CreateUserAsync(userRequestItem.Username, userRequestItem.Password);
+            var result = await _manager.CreateUserAsync(userRequestItem.Username, userRequestItem.Password);
 
-            if (Success)
+            if (result.Value)
             {
                 return true;
             }
 
-            return BadRequest(ErrorString);
+            return BadRequest(result.AdditionalErrorInformation);
         }
     }
 }
