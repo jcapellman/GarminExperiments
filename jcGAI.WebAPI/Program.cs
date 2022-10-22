@@ -76,9 +76,10 @@ namespace jcGAI.WebAPI
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
-            app.UseAuthorization();
             app.UseAuthentication();
+            app.UseRouting();            
+            app.UseAuthorization();
+            
             app.MapControllers();
 
             app.Run();
