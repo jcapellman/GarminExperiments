@@ -11,8 +11,6 @@ namespace jcGAI.WebAPI.Managers
         }
 
         public async Task<IEnumerable<Activities>> GetActivitiesAsync(Guid userId, DateTime? startTime = null, DateTime? endTime = null) => 
-            await Mongo.GetManyAsync<Activities>(a => a.UserId == userId &&
-            (!startTime.HasValue || a.TimeStamp >= startTime.Value) &&
-            (!endTime.HasValue || a.TimeStamp <= endTime.Value));
+            await Mongo.GetManyAsync<Activities>(a => a.UserId == userId);
     }
 }
