@@ -15,8 +15,12 @@ namespace jcGAI.WebAPI
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            var jwtConfig = builder.Configuration.GetSection(AppConstants.JWTConfig).Get<JWTConfig>();
+
             builder.Services.AddSingleton(builder.Configuration.GetSection(AppConstants.DbConnectionMongo).Get<MongoDbConfig>());
-  
+
+            builder.Services.AddSingleton(jwtConfig);
+
             builder.Services.AddSingleton<MongoDbService>();
 
             builder.Services.AddControllers();
@@ -47,7 +51,7 @@ namespace jcGAI.WebAPI
                 c.AddSecurityDefinition(securityScheme.Reference.Id, securityScheme);
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                    {securityScheme, new string[] { }}
+                    {securityScheme, Array.Empty<string>()}
                 });
             });
 
@@ -61,10 +65,10 @@ namespace jcGAI.WebAPI
                     ValidateAudience = true,
                     ValidateLifetime = true,
                     ValidateIssuerSigningKey = true,
-                    ValidIssuer = AppConstants.JWT_Issuer,
-                    ValidAudience = AppConstants.JWT_Audience,
+                    ValidIssuer = jwtConfig.Issuer,
+                    ValidAudience = jwtConfig.Audience,
                     ClockSkew = TimeSpan.Zero,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(AppConstants.JWT_Secret))
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtConfig.Secret))
                 };
             });
 

@@ -6,6 +6,7 @@ using jcGAI.WebAPI.Services;
 
 using jcGAI.WebAPI.Managers;
 using jcGAI.WebAPI.Common;
+using jcGAI.WebAPI.Objects.Config;
 
 namespace jcGAI.WebAPI.Controllers
 {
@@ -13,8 +14,11 @@ namespace jcGAI.WebAPI.Controllers
     [Route("api/v1/account")]
     public class AccountController : BaseController<UserManager>
     {
-        public AccountController(ILogger<AccountController> logger, MongoDbService mongo) : base(logger, mongo)
+        private readonly JWTConfig _jwtConfig;
+
+        public AccountController(ILogger<AccountController> logger, MongoDbService mongo, JWTConfig jwtConfig) : base(logger, mongo)
         {
+            _jwtConfig = jwtConfig;
         }
 
         [HttpGet]
@@ -27,7 +31,7 @@ namespace jcGAI.WebAPI.Controllers
                 return BadRequest("Invalid username or password");
             }
 
-            return JWTIO.GenerateToken(result.Value.Value);
+            return JWTIO.GenerateToken(result.Value.Value, _jwtConfig);
         }
 
         [HttpPost]
