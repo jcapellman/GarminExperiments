@@ -23,7 +23,7 @@ namespace jcGAI.WebAPI.Managers
         {
             var existingUser = await Mongo.GetOneAsync<Users>(a => a.Username == username);
 
-            if (existingUser != null)
+            if (existingUser is not null)
             {
                 return new ReturnSet<bool>(false, $"Existing username ({username}) was found");
             }

@@ -26,7 +26,7 @@ namespace jcGAI.WebAPI.Controllers
         {
             var result = await _manager.LoginAsync(username, password);
 
-            if (result.Value == null)
+            if (result.Value is null)
             {
                 return BadRequest("Invalid username or password");
             }
