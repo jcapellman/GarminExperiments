@@ -1,13 +1,13 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using jcGAI.WebAPI.Attributes;
 
 namespace jcGAI.WebAPI.Objects.Json
 {
     public class UserRequestItem
     {
-        [Required]
+        [RequiredPropertyAttribute]
         public string Username { get; set; }
 
-        [Required]
+        [RequiredPropertyAttribute]
         public string Password { get; set; }
 
         public UserRequestItem()

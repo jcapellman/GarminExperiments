@@ -1,8 +1,10 @@
+using jcGAI.WebAPI.Attributes;
 using jcGAI.WebAPI.Common;
 using jcGAI.WebAPI.Objects.Config;
 using jcGAI.WebAPI.Services;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -16,6 +18,13 @@ namespace jcGAI.WebAPI
             var builder = WebApplication.CreateBuilder(args);
 
             var jwtConfig = builder.Configuration.GetSection(AppConstants.JWTConfig).Get<JWTConfig>();
+
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
+            });
+
+            builder.Services.AddScoped<ValidateModelFilterAttribute>();
 
             builder.Services.AddSingleton(builder.Configuration.GetSection(AppConstants.DbConnectionMongo).Get<MongoDbConfig>());
 

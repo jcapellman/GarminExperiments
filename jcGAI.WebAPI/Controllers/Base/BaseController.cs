@@ -19,5 +19,17 @@ namespace jcGAI.WebAPI.Controllers.Base
 
             _manager = Activator.CreateInstance(typeof(T), mongo) as T ?? throw new NullReferenceException(nameof(_manager));
         }
+
+        protected ActionResult? ValidateState()
+        {
+            if (ModelState.IsValid)
+            {
+                return null;
+            }
+
+            var errors = string.Join(',', ModelState);
+
+            return BadRequest(errors);
+        }
     }
 }

@@ -7,11 +7,13 @@ using jcGAI.WebAPI.Services;
 using jcGAI.WebAPI.Managers;
 using jcGAI.WebAPI.Common;
 using jcGAI.WebAPI.Objects.Config;
+using jcGAI.WebAPI.Attributes;
 
 namespace jcGAI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/v1/account")]
+    [ServiceFilter(typeof(ValidateModelFilterAttribute))]
     public class AccountController : BaseController<UserManager>
     {
         private readonly JWTConfig _jwtConfig;
@@ -21,7 +23,7 @@ namespace jcGAI.WebAPI.Controllers
             _jwtConfig = jwtConfig;
         }
 
-        [HttpGet]
+        [HttpGet]        
         public async Task<ActionResult<string>> LoginAsync(string username, string password)
         {
             var result = await _manager.LoginAsync(username, password);
