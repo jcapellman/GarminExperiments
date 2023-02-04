@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace jcGAI.WebAPI.Controllers
 {
     [ApiController]
-    [Route("api/v1/dataingest")]
+    [Route("api/v1/ingest")]
     public class DataIngestController : BaseController<DataIngestManager>
     {
         public DataIngestController(ILogger<DataIngestController> logger, MongoDbService mongo) : base(logger, mongo)
