@@ -2,7 +2,6 @@
 
 namespace jcGAI.WebAPI.Attributes
 {
-    [AttributeUsage(AttributeTargets.Property)]
     public class RequiredPropertyAttribute : ValidationAttribute
     {
         private Type? _propertyType;

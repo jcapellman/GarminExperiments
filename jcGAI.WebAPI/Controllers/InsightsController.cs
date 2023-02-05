@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using jcGAI.WebAPI.Attributes;
 using jcGAI.WebAPI.Controllers.Base;
 using jcGAI.WebAPI.Managers;
 using jcGAI.WebAPI.Objects.Json;
@@ -11,6 +12,7 @@ namespace jcGAI.WebAPI.Controllers
 {
     [ApiController]
     [Route("api/v1/insights")]
+    [ServiceFilter(typeof(ValidateModelFilterAttribute))]
     public class InsightsController : BaseController<InsightsManager>
     {
         public InsightsController(ILogger<InsightsController> logger, MongoDbService mongo) : base(logger, mongo)

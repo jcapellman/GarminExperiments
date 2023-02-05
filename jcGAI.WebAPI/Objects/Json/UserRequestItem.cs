@@ -4,10 +4,10 @@ namespace jcGAI.WebAPI.Objects.Json
 {
     public class UserRequestItem
     {
-        [RequiredPropertyAttribute]
+        [RequiredProperty]
         public string Username { get; set; }
 
-        [RequiredPropertyAttribute]
+        [RequiredProperty]
         public string Password { get; set; }
 
         public UserRequestItem()
