@@ -19,6 +19,18 @@ namespace jcGAI.WebAPI
 
             var jwtConfig = builder.Configuration.GetSection(AppConstants.JWTConfig).Get<JWTConfig>();
 
+            if (jwtConfig is null)
+            {
+                throw new Exception("JWT Config was not set - shutting down");
+            }
+
+            var mongoConfig = builder.Configuration.GetSection(AppConstants.DbConnectionMongo).Get<MongoDbConfig>();
+
+            if (mongoConfig is null)
+            {
+                throw new Exception("Mongo Config was not set - shutting down");
+            }
+
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
                 options.SuppressModelStateInvalidFilter = true;
@@ -26,7 +38,7 @@ namespace jcGAI.WebAPI
 
             builder.Services.AddScoped<ValidateModelFilterAttribute>();
 
-            builder.Services.AddSingleton(builder.Configuration.GetSection(AppConstants.DbConnectionMongo).Get<MongoDbConfig>());
+            builder.Services.AddSingleton(mongoConfig);
 
             builder.Services.AddSingleton(jwtConfig);
 
